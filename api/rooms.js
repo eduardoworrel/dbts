@@ -1,19 +1,32 @@
-// rooms.js
+const redis = require('redis');
 
-let rooms = []; // Simulando armazenamento de salas em memória
+const redisHost = process.env.REDIS_HOST || 'localhost';
+const redisPort = process.env.REDIS_PORT || 6379;
 
-// Função para buscar todas as salas
-function getRooms() {
-  return rooms;
+const client = redis.createClient({
+  url: `redis://${redisHost}:${redisPort}`
+});
+
+
+client.on('error', (err) => console.error('Redis Client Error', err));
+
+client.connect();
+
+async function getRooms() {
+  const rooms = await client.lRange('rooms', 0, -1);  
+  return rooms.map(room => JSON.parse(room)); 
 }
 
 // Função para criar uma nova sala
-function createRoom(name) {
+async function createRoom(name) {
+  const rooms = await getRooms();
   const newRoom = {
-    id: rooms.length + 1, // ID único para a sala
+    id: rooms.length + 1,  
     name,
   };
-  rooms.push(newRoom);
+  
+  await client.rPush('rooms', JSON.stringify(newRoom));
+
   return newRoom;
 }
 

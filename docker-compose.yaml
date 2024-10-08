@@ -3,23 +3,34 @@ version: '3'
 services:
   backend:
     build:
-      context: ./backend
+      context: ./api
     ports:
       - "8080:8080"
     environment:
       - NODE_ENV=production
+      - REDIS_HOST=redis 
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
     networks:
       - app-network
 
   frontend:
     build:
-      context: ./frontend
+      context: ./ui
     ports:
       - "80:80"
     environment:
       - NODE_ENV=production
     depends_on:
       - backend
+    networks:
+      - app-network
+
+  redis:
+    image: "redis:latest"  
+    ports:
+      - "6379:6379" 
     networks:
       - app-network
 
