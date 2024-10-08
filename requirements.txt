@@ -1,0 +1,8 @@
+Test Task:
+create a simple chat room with nodejs v20 and socket.io
+user is prompted to choose a username
+then they are shown the list of available rooms and a "create room" button
+if he clicks to join a room, he is taken to that room and can start receiving and sending message from everyone in that room
+extra points:
+saving the history on redis
+frontend with reactjs v18
