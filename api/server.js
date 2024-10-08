@@ -4,6 +4,7 @@ const { getRooms, createRoom } = require("./rooms");
 const { getMessages, addMessage } = require("./messages");
 const http = require("http");
 const { Server } = require("socket.io");
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = 8080;
