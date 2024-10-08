@@ -74,7 +74,7 @@ function Rooms() {
         <List>
           {Object.entries(rooms).map(([_, room]) => (
             <ListItem key={room.id} button onClick={() => joinRoom(room.name)}>
-              <ListItemText primary={room.id} />
+              <ListItemText primary={room.name} />
               <Button variant="outlined" color="secondary">
                 Join
               </Button>

@@ -97,7 +97,7 @@ function ChatRoom() {
           }}
         >
           <Typography variant="h5" align="center" gutterBottom>
-            Room {roomId}
+            {roomId}
           </Typography>
 
           <List
