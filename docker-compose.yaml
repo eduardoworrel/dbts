@@ -8,8 +8,9 @@ services:
       - "8080:8080"
     environment:
       - NODE_ENV=production
-      - REDIS_HOST=redis 
-      - REDIS_PORT=6379
+      - REDIS_HOST=redis-16359.c15.us-east-1-4.ec2.redns.redis-cloud.com 
+      - REDIS_PORT=16359
+      - REDIS_PASS=PuUQhAAhdm2oKl3aVFFBXjIWuz0WMFKK
     depends_on:
       - redis
     networks:
