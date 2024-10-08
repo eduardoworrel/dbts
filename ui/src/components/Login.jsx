@@ -4,12 +4,36 @@ import { Button, TextField, Container, Typography, Box } from '@mui/material';
 
 function Login({ setUsername }) {
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (name) {
-      setUsername(name);
-      navigate('/rooms');
+  const handleLogin = async () => {
+    if (!name) {
+      setError('Username is required');
+      return;
+    }
+
+    try {
+      // Validação no servidor
+      const response = await fetch('http://localhost:8080/api/validate-username', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: name }),
+      });
+      const result = await response.json();
+
+      if (result.isValid) {
+        // Nome de usuário é válido
+        localStorage.setItem('username', name); // Salvar no localStorage
+        setUsername(name);
+        navigate('/rooms');
+      } else {
+        // Nome de usuário já está em uso
+        setError('Username already in use');
+      }
+    } catch (err) {
+      console.error('Error validating username:', err);
+      setError('Server error, please try again later.');
     }
   };
 
@@ -55,6 +79,8 @@ function Login({ setUsername }) {
               marginBottom: '20px',
               backgroundColor: '#424242',
             }}
+            error={!!error}
+            helperText={error}
           />
           <Button
             fullWidth

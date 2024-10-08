@@ -5,44 +5,61 @@ import { io } from 'socket.io-client';  // Importando o socket.io-client
 
 const SOCKET_SERVER_URL = 'http://localhost:8080';  // A URL do seu servidor de socket.io
 
-function ChatRoom({ username }) {
+function ChatRoom() {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const socketRef = useRef(null);  // Usaremos isso para armazenar a instância do socket
   const messagesEndRef = useRef(null); // Referência para o final da lista de mensagens
+  const inputRef = useRef(null); // Referência para o campo de texto
   const [autoScroll, setAutoScroll] = useState(true); // Para verificar se a rolagem automática deve ser feita
+
+  // Obtendo o nome de usuário do localStorage
+  const username = localStorage.getItem('username');
+
+  // Se o nome de usuário não existir, redirecionar para a página de login
+  useEffect(() => {
+    if (!username) {
+      navigate('/login');  // Redirecionar para a página de login se não houver username
+    }
+  }, [username, navigate]);
 
   // Conectar ao Socket.IO quando o componente montar
   useEffect(() => {
-    socketRef.current = io(SOCKET_SERVER_URL, {
-      query: { username },  // Enviando o nome de usuário na conexão
-    });
+    if (username) {
+      socketRef.current = io(SOCKET_SERVER_URL, {
+        query: { username },  // Enviando o nome de usuário na conexão
+      });
 
-    // Emitir o evento para entrar na sala após conectar ao servidor
-    socketRef.current.emit('join_room', roomId);  // Cliente entra na sala ao conectar
+      socketRef.current.emit('join_room', { roomId, username }); 
 
-    // Receber mensagens do servidor
-    socketRef.current.on('receive_message', (message) => {
-      // Verificar se a mensagem não é duplicada (evitar a própria mensagem enviada)
-      if (message.user !== username) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
-    });
+      // Receber mensagens do servidor
+      socketRef.current.on('receive_message', (message) => {
+        // Verificar se a mensagem não é duplicada (evitar a própria mensagem enviada)
+        if (message.user !== username) {
+          setMessages((prevMessages) => [...prevMessages, message]);
+        }
+      });
 
-    // Limpar o socket quando o componente desmontar
-    return () => {
-      socketRef.current.disconnect();  // Desconectar do socket ao sair da sala
-    };
+      // Limpar o socket quando o componente desmontar
+      return () => {
+        socketRef.current.disconnect();  // Desconectar do socket ao sair da sala
+      };
+    }
   }, [roomId, username]);
 
   // Função para enviar mensagens para o servidor
   const sendMessage = () => {
+    if (newMessage.length === 0) {
+      // Se a mensagem estiver vazia, refoque o campo de texto
+      inputRef.current.focus();
+      return;
+    }
     const messageObj = { user: username, message: newMessage, roomId };
-    socketRef.current.emit('send_message', messageObj);  // Emitindo a mensagem para o servidor
-    setMessages((prevMessages) => [...prevMessages, messageObj]);  // Atualizando a lista de mensagens localmente
-    setNewMessage('');  // Limpar o campo de mensagem após enviar
+    socketRef.current.emit('send_message', messageObj); 
+    setMessages((prevMessages) => [...prevMessages, messageObj]); 
+    setNewMessage('');  
   };
 
   // Função para sair da sala
@@ -111,7 +128,14 @@ function ChatRoom({ username }) {
             variant="outlined"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                sendMessage();  // Enviar mensagem ao pressionar Enter
+                e.preventDefault();  // Prevenir comportamento padrão de nova linha
+              }
+            }}
             style={{ backgroundColor: '#424242', marginTop: '20px', borderRadius: '5px', color: '#fff' }}
+            inputRef={inputRef}  // Referência para focar no campo de texto
             InputProps={{
               style: { color: '#fff' },
             }}

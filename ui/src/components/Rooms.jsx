@@ -31,9 +31,17 @@ const createRoomApi = async () => {
   }
 };
 
-function Rooms({ username }) {
+function Rooms() {
   const [rooms, setRooms] = useState([]);
   const navigate = useNavigate();
+  const username = localStorage.getItem('username'); // Carregar o nome de usuário do localStorage
+
+  // Se o nome de usuário não existir, redirecionar para a página de login
+  useEffect(() => {
+    if (!username) {
+      navigate('/');
+    }
+  }, [username, navigate]);
 
   // Buscar as salas ao carregar o componente
   useEffect(() => {
