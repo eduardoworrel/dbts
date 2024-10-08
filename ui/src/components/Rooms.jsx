@@ -4,7 +4,7 @@ import { Button, List, ListItem, ListItemText, Container, Typography } from '@mu
 
 // Função para buscar as salas do backend
 const fetchRooms = async () => {
-  const response = await fetch('http://localhost:8080/api/rooms'); // Ajuste para a URL correta do seu backend
+  const response = await fetch('http://backend:8080/api/rooms'); // Ajuste para a URL correta do seu backend
   if (response.ok) {
     return await response.json();
   } else {
@@ -15,7 +15,7 @@ const fetchRooms = async () => {
 
 // Função para criar uma nova sala no backend
 const createRoomApi = async () => {
-  const response = await fetch('http://localhost:8080/api/rooms', {
+  const response = await fetch('http://backend:8080/api/rooms', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
