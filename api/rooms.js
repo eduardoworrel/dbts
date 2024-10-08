@@ -1,38 +1,46 @@
-const redis = require('redis');
+const redis = require("redis");
 
-const redisHost = process.env.REDIS_HOST || 'localhost';
+const redisHost = process.env.REDIS_HOST || "localhost";
 const redisPort = process.env.REDIS_PORT || 6379;
 const redisPass = process.env.REDIS_PASS || "";
 
 const client = redis.createClient({
-    password: redisPass,
-    socket: {
-        host: redisHost,
-        port: redisPort
-    }
+  password: redisPass,
+  socket: {
+    host: redisHost,
+    port: redisPort,
+  },
 });
 
-
-client.on('error', (err) => console.error('Redis Client Error', err));
+client.on("error", (err) => console.error("Redis Client Error", err));
 
 client.connect();
 
 async function getRooms() {
-  const rooms = await client.lRange('rooms', 0, -1);  
-  return rooms.map(room => JSON.parse(room)); 
+  try {
+    const roomsData = await client.get("rooms");
+    if (!roomsData) return [];
+    return JSON.parse(roomsData);
+  } catch (error) {
+    console.error("Error getting rooms:", error);
+    return [];
+  }
 }
 
-// Função para criar uma nova sala
 async function createRoom(name) {
-  const rooms = await getRooms();
-  const newRoom = {
-    id: rooms.length + 1,  
-    name,
-  };
-  
-  await client.rPush('rooms', JSON.stringify(newRoom));
+  try {
+    const rooms = await getRooms();
+    const newRoom = {
+      id: rooms.length + 1,
+      name,
+    };
+    rooms.push(newRoom);
+    await client.set("rooms", JSON.stringify(rooms));
 
-  return newRoom;
+    return newRoom;
+  } catch (error) {
+    console.error("Error creating room:", error);
+    return null;
+  }
 }
-
 module.exports = { getRooms, createRoom };

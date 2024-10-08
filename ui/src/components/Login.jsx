@@ -14,7 +14,6 @@ function Login({ setUsername }) {
     }
 
     try {
-      // Validação no servidor
       const response = await fetch('http://104.131.181.50:8080/api/validate-username', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -23,12 +22,11 @@ function Login({ setUsername }) {
       const result = await response.json();
 
       if (result.isValid) {
-        // Nome de usuário é válido
-        localStorage.setItem('username', name); // Salvar no localStorage
+        localStorage.setItem('username', name);
         setUsername(name);
         navigate('/rooms');
       } else {
-        // Nome de usuário já está em uso
+        
         setError('Username already in use');
       }
     } catch (err) {

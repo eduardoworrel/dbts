@@ -2,29 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, List, ListItem, ListItemText, Container, Typography } from '@mui/material';
 
-// Função para buscar as salas do backend
 const fetchRooms = async () => {
-  const response = await fetch('http://104.131.181.50:8080/api/rooms'); // Ajuste para a URL correta do seu backend
+  const response = await fetch('http://104.131.181.50:8080/api/rooms');
   if (response.ok) {
     return await response.json();
   } else {
     console.error('Failed to fetch rooms');
-    return [];
+    return {};
   }
 };
 
-// Função para criar uma nova sala no backend
 const createRoomApi = async () => {
   const response = await fetch('http://104.131.181.50:8080/api/rooms', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ name: `Room ${Date.now()}` }), // A sala pode ter um nome gerado com timestamp
+    body: JSON.stringify({ name: `Room ${Date.now()}` }), 
   });
 
   if (response.ok) {
-    return await response.json(); // Supondo que o backend retorne o objeto da nova sala criada
+    return await response.json(); 
   } else {
     console.error('Failed to create room');
     return null;
@@ -32,32 +30,28 @@ const createRoomApi = async () => {
 };
 
 function Rooms() {
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState({});
   const navigate = useNavigate();
-  const username = localStorage.getItem('username'); // Carregar o nome de usuário do localStorage
+  const username = localStorage.getItem('username');
 
-  // Se o nome de usuário não existir, redirecionar para a página de login
   useEffect(() => {
     if (!username) {
       navigate('/');
     }
   }, [username, navigate]);
 
-  // Buscar as salas ao carregar o componente
   useEffect(() => {
     fetchRooms().then((data) => setRooms(data));
   }, []);
 
-  // Função para criar uma nova sala e entrar nela automaticamente
   const createRoom = async () => {
     const newRoom = await createRoomApi();
     if (newRoom) {
-      setRooms([...rooms, newRoom]); // Adicionar a nova sala à lista
-      navigate(`/room/${newRoom.id}`); // Navegar para a nova sala criada
+      setRooms({ ...rooms, [newRoom.id]: newRoom });
+      navigate(`/room/${newRoom.id}`); 
     }
   };
 
-  // Função para entrar em uma sala existente
   const joinRoom = (roomId) => {
     navigate(`/room/${roomId}`);
   };
@@ -79,9 +73,9 @@ function Rooms() {
         </Button>
         <Typography variant="h6">Available Rooms</Typography>
         <List>
-          {rooms.map((room) => (
-            <ListItem key={room.id} button onClick={() => joinRoom(room.id)}>
-              <ListItemText primary={room.name} />
+          {Object.keys(rooms).map((roomId) => (
+            <ListItem key={roomId} button onClick={() => joinRoom(roomId)}>
+              <ListItemText primary={rooms[roomId].name} />
               <Button variant="outlined" color="secondary">
                 Join
               </Button>
