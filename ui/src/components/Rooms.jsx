@@ -72,9 +72,10 @@ function Rooms() {
         </Button>
         <Typography variant="h6">Available Rooms</Typography>
         <List>
-          {Object.keys(rooms).map((roomId) => (
-            <ListItem key={roomId} button onClick={() => joinRoom(roomId)}>
-              <ListItemText primary={rooms[roomId].name} />
+          {Object.entries(rooms).map(([_, room]) => (
+            <ListItem key={room.id} button onClick={() => joinRoom(room.name)}>
+              {console.log(room)}
+              <ListItemText primary={room.id} />
               <Button variant="outlined" color="secondary">
                 Join
               </Button>
