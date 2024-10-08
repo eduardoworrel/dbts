@@ -11,8 +11,6 @@ services:
       - REDIS_HOST=redis-16359.c15.us-east-1-4.ec2.redns.redis-cloud.com 
       - REDIS_PORT=16359
       - REDIS_PASS=PuUQhAAhdm2oKl3aVFFBXjIWuz0WMFKK
-    depends_on:
-      - redis
     networks:
       - app-network
 
