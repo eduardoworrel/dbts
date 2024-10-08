@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, List, ListItem, ListItemText, Container, Typography } from '@mui/material';
-const { v4: uuidv4 } = require('uuid');
 
 const fetchRooms = async () => {
   const response = await fetch('http://104.131.181.50:8080/api/rooms');
