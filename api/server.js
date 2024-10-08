@@ -25,12 +25,8 @@ app.get("/api/rooms", async (req, res) => {
 });
 
 app.post("/api/rooms", async (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ error: "Room name is required" });
-  }
 
-  const newRoom = await createRoom(name);
+  const newRoom = await createRoom(uuidv4());
   res.status(201).json(newRoom);
 });
 

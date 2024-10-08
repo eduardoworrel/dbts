@@ -31,7 +31,7 @@ async function createRoom(name) {
   try {
     const rooms = await getRooms();
     const newRoom = {
-      id: rooms.length + 1,
+      id: name,
       name,
     };
     rooms.push(newRoom);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, List, ListItem, ListItemText, Container, Typography } from '@mui/material';
+const { v4: uuidv4 } = require('uuid');
 
 const fetchRooms = async () => {
   const response = await fetch('http://104.131.181.50:8080/api/rooms');
@@ -17,8 +18,7 @@ const createRoomApi = async () => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name: `Room ${Date.now()}` }), 
+    }, 
   });
 
   if (response.ok) {
@@ -47,8 +47,8 @@ function Rooms() {
   const createRoom = async () => {
     const newRoom = await createRoomApi();
     if (newRoom) {
-      setRooms({ ...rooms, [newRoom.id]: newRoom });
-      navigate(`/room/${newRoom.id}`); 
+      setRooms({ ...rooms, [newRoom.name]: newRoom });
+      navigate(`/room/${newRoom.name}`); 
     }
   };
 
