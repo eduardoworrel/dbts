@@ -101,7 +101,7 @@ function ChatRoom() {
           </Typography>
 
           <List
-            style={{ width: '100%', maxHeight: '300px', overflowY: 'auto', backgroundColor: '#424242', padding: '10px', borderRadius: '5px' }}
+            style={{ width: '100%', height: '300px', overflowY: 'auto', backgroundColor: '#424242', padding: '10px', borderRadius: '5px' }}
             onScroll={handleScroll}  
           >
             {messages.map((msg, index) => (
