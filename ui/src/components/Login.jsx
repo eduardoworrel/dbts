@@ -15,7 +15,7 @@ function Login({ setUsername }) {
 
     try {
       // Validação no servidor
-      const response = await fetch('http://backend:8080/api/validate-username', {
+      const response = await fetch('http://http://104.131.181.50:8080/api/validate-username', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: name }),

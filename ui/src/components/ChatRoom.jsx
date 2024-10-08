@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 import { io } from 'socket.io-client';  // Importando o socket.io-client
 
-const SOCKET_SERVER_URL = 'http://backend:8080';  // A URL do seu servidor de socket.io
+const SOCKET_SERVER_URL = 'http://http://104.131.181.50:8080';  // A URL do seu servidor de socket.io
 
 function ChatRoom() {
   const { roomId } = useParams();
